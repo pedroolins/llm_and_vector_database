@@ -1,0 +1,58 @@
+version: '3'
+services:
+  ## O Vector Database
+  qdrant:
+    image: qdrant/qdrant
+    ports:
+      - ${PORT_VECTOR_DATABASE}:${PORT_VECTOR_DATABASE}
+    volumes:
+      - ./qdrant_storage:/qdrant/storage:z
+     
+  ## microserviço que recebe os documentos
+  app_doc:
+    build:
+      context: .
+      dockerfile: dockerfile_api_doc
+      args:
+        PORT: ${PORT_API_DOC}
+    image: api_document
+    env_file:
+      - .env
+    ports:
+      - ${PORT_API_DOC}:${PORT_API_DOC}
+    depends_on:
+      - qdrant
+
+  # microserviço que recebe a pergunta
+  app_chat:
+    build:
+      context: .
+      dockerfile: dockerfile_api_chat
+      args:
+        PORT: ${PORT_API_CHAT}
+    image: api_chat
+    env_file:
+      - .env
+    ports:
+      - ${PORT_API_CHAT}:${PORT_API_CHAT}
+    depends_on:
+      - qdrant
+
+  ## interface para as aplicação de chat
+  app_interface:
+    build:
+      context: .
+      dockerfile: dockerfile_app_interface
+      args:
+        PORT: ${PORT_INTERFACE}
+    image: app_interface
+    env_file:
+      - .env
+    ports:
+      - ${PORT_INTERFACE}:${PORT_INTERFACE}
+    depends_on:
+      - qdrant
+      - app_chat
+      - app_doc
+
+  

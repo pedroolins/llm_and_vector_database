@@ -1,0 +1,17 @@
+FROM python:3.9-slim-buster
+
+# Comando que vai fazer aparecer as mensagens de logs
+ENV PYTHONUNBUFFERED True
+ENV APP_HOME /app
+ENV IN_CONTAINER qdrant
+
+## copiando todos os arquivos do diretório para o workdir no container
+WORKDIR $APP_HOME
+COPY . .
+
+## rodando os comandos de pip para instalar as dependências
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+## comando que irá dar o start no container
+CMD exec gunicorn --bind :$PORT_API_DOC --log-level critical --workers 1 --threads 8 --timeout 0 app_doc:app

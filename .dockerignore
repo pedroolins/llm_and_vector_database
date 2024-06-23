@@ -1,0 +1,21 @@
+notebooks/*
+tests/*
+/.venv
+/.github
+data/*
+
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+pyproject.toml
+poetry.lock
+##vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
